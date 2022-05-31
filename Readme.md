@@ -43,3 +43,8 @@
     migrate -path=./migrations -database=$URL_DB down 1
 
 Всместо ***-path*** можно еще использовать ключ ***-source*** для ресурсов миграции с удаленных репозиториев
+
+Для создания новой миграции можно воспользоваться следующей командой:
+    
+    migrate create -seq -ext=.sql -dir=./migrations migration_name
+

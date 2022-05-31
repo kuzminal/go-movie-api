@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"api.movie.kuzmin.ru/internal/validator"
 
@@ -170,6 +171,18 @@ func (app *application) validateAndUpdate(movie *data.Movie, w http.ResponseWrit
 	if data.ValidateMovie(v, movie); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
+	}
+	if r.Header.Get("If-None-Match") != "" {
+		if strconv.FormatInt(int64(movie.Version), 32) == r.Header.Get("If-None-Match") {
+			app.editNotModifyResponse(w, r)
+			return
+		}
+	}
+	if r.Header.Get("X-Expected-Version") != "" {
+		if strconv.FormatInt(int64(movie.Version), 32) != r.Header.Get("X-Expected-Version") {
+			app.editConflictResponse(w, r)
+			return
+		}
 	}
 	err := app.models.Movies.Update(movie)
 	if err != nil {
