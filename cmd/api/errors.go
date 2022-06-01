@@ -53,3 +53,8 @@ func (app *application) editNotModifyResponse(w http.ResponseWriter, r *http.Req
 	message := "nothing to change"
 	app.errorResponse(w, r, http.StatusNotModified, message)
 }
+
+func (app *application) rateLimitExceededResponse(w http.ResponseWriter, r *http.Request) {
+	message := "rate limit exceeded"
+	app.errorResponse(w, r, http.StatusTooManyRequests, message)
+}

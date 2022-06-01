@@ -8,6 +8,12 @@
     
     xargs -I % -P8 curl -X PATCH -d '{"runtime": "97 mins"}' "localhost:4000/v1/movies/4" < <(printf '%s\n' {1..8})
 
+Также API имеет RateLimiter. В качестве реализции используется ***x/time/rate*** и метод на основе bucket'ов.
+Чтобы проверить ограничения на кол-во запросов можно выпонить, например, следующую команду:
+
+    for i in {1..6}; do curl http://localhost:4000/v1/healthcheck; done
+Вместо ***localhost*** указать хост, на котором запущено приложение.
+
 ### Структура проекта
 Пакет ***internal/data***:
 - **models.go** - абстракция, для работы с БД
